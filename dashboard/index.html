@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Live ESP32 and MPU6050 fall-detection telemetry from the Tinkered simulator."
+    />
+    <meta name="theme-color" content="#0b1017" />
+    <title>LihokSafe — Fall Detection Dashboard</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-telemetry="loading">
+    <a class="skip-link" href="#main-content">Skip to dashboard</a>
+
+    <header class="topbar">
+      <a class="brand" href="#main-content" aria-label="LihokSafe dashboard home">
+        <span class="brand-mark" aria-hidden="true">LS</span>
+        <span>
+          <strong>LihokSafe</strong>
+          <small>Fall detection dashboard</small>
+        </span>
+      </a>
+
+      <div class="topbar-actions">
+        <span class="connection-badge is-waiting" id="connection-badge" title="Live connection to the Tinkered simulator">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span id="connection-label">Connecting</span>
+        </span>
+        <a
+          class="topbar-link"
+          href="https://app.tinkered.ai/projects/d6370003-031b-4ae4-a015-f67d5407cd06/studio"
+          target="_blank"
+          rel="noreferrer"
+        >Open Tinkered</a>
+        <button
+          class="quiet-button"
+          id="sound-toggle"
+          type="button"
+          aria-pressed="false"
+          title="Alert sounds are off"
+        >
+          <span aria-hidden="true">♪</span>
+          <span id="sound-label">Sound off</span>
+        </button>
+        <time class="dashboard-clock" id="dashboard-clock" aria-label="Current local time">--:--:--</time>
+      </div>
+    </header>
+
+    <main id="main-content" class="dashboard-shell">
+      <section
+        class="status-panel"
+        id="status-panel"
+        data-state="offline"
+        role="status"
+        aria-live="polite"
+        aria-labelledby="status-title"
+      >
+        <div class="status-main">
+          <div class="section-kicker">
+            <span class="state-symbol" id="state-symbol" aria-hidden="true">…</span>
+            <span id="status-code">Connecting to monitor</span>
+          </div>
+          <h2 id="status-title">Waiting for the first live Tinkered packet</h2>
+          <p id="status-description">
+            Start the Tinkered simulation to begin real-time fall detection.
+          </p>
+          <div class="status-meta" aria-label="Monitoring details">
+            <span><b id="wearer-label">Wearer 01</b></span>
+            <span id="mpu-status">MPU6050 waiting</span>
+            <span id="last-update-label">No live packet</span>
+          </div>
+        </div>
+
+        <div class="status-visual" aria-hidden="true">
+          <div class="signal-orbit">
+            <span></span>
+            <i></i>
+          </div>
+          <div class="status-reading">
+            <span>Risk level</span>
+            <strong id="risk-label">—</strong>
+          </div>
+        </div>
+
+        <button class="acknowledge-button" id="status-acknowledge" type="button" hidden>
+          Acknowledge alert
+        </button>
+      </section>
+
+      <section class="session-strip" aria-label="Live session summary">
+        <article>
+          <span>Falls detected</span>
+          <strong id="fall-count">0</strong>
+          <small>This monitoring session</small>
+        </article>
+        <article>
+          <span>Emergency presses</span>
+          <strong id="emergency-count">0</strong>
+          <small>Manual SOS events</small>
+        </article>
+        <article>
+          <span>Decision source</span>
+          <strong id="active-source">Waiting</strong>
+          <small>Firmware or vector logic</small>
+        </article>
+        <article>
+          <span>Latest alert</span>
+          <strong id="last-alert">None</strong>
+          <small id="last-alert-time">No event recorded</small>
+        </article>
+      </section>
+
+      <p class="sr-only" id="urgent-announcer" role="alert" aria-live="assertive"></p>
+
+      <section class="metric-grid" aria-label="Live movement summary">
+        <article class="metric-card" id="accel-metric">
+          <div class="metric-heading">
+            <div>
+              <p class="eyebrow">G-force vector</p>
+              <h2>Acceleration</h2>
+            </div>
+            <span class="metric-state" id="accel-state">Waiting</span>
+          </div>
+          <div class="metric-gauge">
+            <div class="gauge-ring">
+              <div class="metric-value">
+                <strong id="accel-value">—</strong>
+                <span>g</span>
+              </div>
+            </div>
+          </div>
+          <div
+            class="threshold-track"
+            role="meter"
+            aria-label="Acceleration relative to fall threshold"
+            aria-valuemin="0"
+            aria-valuemax="2.2"
+            aria-valuenow="0"
+            id="accel-progress"
+          >
+            <span id="accel-progress-fill"></span>
+          </div>
+          <div class="metric-foot">
+            <span>Filtered magnitude</span>
+            <span>Threshold <b>2.20 g</b></span>
+          </div>
+        </article>
+
+        <article class="metric-card" id="gyro-metric">
+          <div class="metric-heading">
+            <div>
+              <p class="eyebrow" id="secondary-eyebrow">Rotational velocity</p>
+              <h2 id="secondary-title">Rotation</h2>
+            </div>
+            <span class="metric-state" id="gyro-state">Waiting</span>
+          </div>
+          <div class="metric-gauge">
+            <div class="gauge-ring">
+              <div class="metric-value">
+                <strong id="gyro-value">—</strong>
+                <span id="secondary-unit">°/s</span>
+              </div>
+            </div>
+          </div>
+          <div
+            class="threshold-track"
+            role="meter"
+            aria-label="Rotation relative to fall threshold"
+            aria-valuemin="0"
+            aria-valuemax="220"
+            aria-valuenow="0"
+            id="gyro-progress"
+          >
+            <span id="gyro-progress-fill"></span>
+          </div>
+          <div class="metric-foot">
+            <span>Filtered magnitude</span>
+            <span>Threshold <b id="secondary-threshold">220 °/s</b></span>
+          </div>
+        </article>
+
+        <article class="metric-card correlation-card" id="correlation-metric">
+          <div class="metric-heading">
+            <div>
+              <p class="eyebrow">Detection logic</p>
+              <h2>Signal match</h2>
+            </div>
+            <span class="metric-state" id="decision-mode-badge">Firmware logic</span>
+          </div>
+          <div class="signal-match" aria-label="Matched fall signals">
+            <div class="signal-node" id="accel-node">
+              <span aria-hidden="true">A</span>
+              <p>G-force spike</p>
+            </div>
+            <span class="signal-link" aria-hidden="true"></span>
+            <div class="signal-node" id="gyro-node">
+              <span aria-hidden="true">R</span>
+              <p id="secondary-node-label">Rotation spike</p>
+            </div>
+          </div>
+          <div class="metric-foot">
+            <span id="correlation-copy">Waiting for live signals</span>
+            <span id="cooldown-copy">Waiting</span>
+          </div>
+        </article>
+      </section>
+
+      <section class="workspace-grid">
+        <article class="panel simulation-panel live-source-panel" aria-labelledby="simulation-title">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Real simulator feed</p>
+              <h2 id="simulation-title">Tinkered live connection</h2>
+            </div>
+            <span class="live-label is-waiting" id="bridge-badge"><i aria-hidden="true"></i> Connecting</span>
+          </div>
+          <p class="panel-intro" id="bridge-help">
+            Start the Tinkered simulation and keep its Serial Monitor open. Sensor readings will appear here automatically.
+          </p>
+          <dl class="bridge-status-list">
+            <div>
+              <dt><span class="bridge-step" id="server-step" aria-hidden="true">1</span> Local monitor</dt>
+              <dd id="server-state">Online</dd>
+            </div>
+            <div>
+              <dt><span class="bridge-step" id="extension-step" aria-hidden="true">2</span> Browser bridge</dt>
+              <dd id="extension-state">Waiting</dd>
+            </div>
+            <div>
+              <dt><span class="bridge-step" id="telemetry-step" aria-hidden="true">3</span> Live telemetry</dt>
+              <dd id="telemetry-state">Waiting</dd>
+            </div>
+          </dl>
+          <div class="simulation-actions">
+            <a
+              class="secondary-button link-button"
+              href="https://app.tinkered.ai/projects/d6370003-031b-4ae4-a015-f67d5407cd06/studio"
+              target="_blank"
+              rel="noreferrer"
+            >Open Tinkered Studio</a>
+            <button class="text-button" id="check-connection" type="button">Check connection now</button>
+          </div>
+          <p class="real-data-note"><b>No generated samples.</b> Every number on this dashboard comes from the active Tinkered page or its Serial Monitor.</p>
+        </article>
+
+        <article class="panel device-panel" aria-labelledby="device-title">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Wearable device</p>
+              <h2 id="device-title">ESP32 · Tinkered simulator</h2>
+            </div>
+            <span class="device-online is-waiting" id="device-badge"><i aria-hidden="true"></i> Waiting</span>
+          </div>
+
+          <dl class="device-list">
+            <div>
+              <dt>Sensor</dt>
+              <dd>MPU6050 · 6-axis IMU</dd>
+            </div>
+            <div>
+              <dt>Data source</dt>
+              <dd id="data-source">Tinkered bridge</dd>
+            </div>
+            <div>
+              <dt>Dashboard refresh</dt>
+              <dd>Checks for new live packets every 500 ms</dd>
+            </div>
+            <div>
+              <dt>Network alarm</dt>
+              <dd id="transport-summary">Waiting for live data</dd>
+            </div>
+            <div>
+              <dt>Session uptime</dt>
+              <dd id="session-uptime">00:00:00</dd>
+            </div>
+          </dl>
+
+          <div class="prototype-note">
+            <span aria-hidden="true">i</span>
+            <p><b>Live simulator data only</b> — the bridge never invents or randomizes sensor readings.</p>
+          </div>
+        </article>
+      </section>
+
+      <section class="chart-grid" aria-label="Live sensor charts">
+        <article class="panel chart-panel">
+          <div class="panel-heading chart-heading">
+            <div>
+              <p class="eyebrow">Last 15 seconds</p>
+              <h2>G-force magnitude</h2>
+            </div>
+            <div class="chart-legend" aria-hidden="true">
+              <span><i class="legend-live"></i> Filtered</span>
+              <span><i class="legend-threshold"></i> Threshold</span>
+            </div>
+          </div>
+          <dl class="chart-stat-row" aria-label="G-force chart readings">
+            <div>
+              <dt>Current</dt>
+              <dd id="accel-current-stat">-- g</dd>
+            </div>
+            <div>
+              <dt>Peak</dt>
+              <dd id="accel-peak-stat">-- g</dd>
+            </div>
+            <div>
+              <dt>Limit</dt>
+              <dd id="accel-threshold-stat">2.20 g</dd>
+            </div>
+          </dl>
+          <div class="chart-wrap">
+            <canvas
+              id="accel-chart"
+              height="240"
+              role="img"
+              aria-label="Waiting for live G-force data"
+            ></canvas>
+          </div>
+          <p class="chart-summary" id="accel-chart-summary">Acceleration is below the configured threshold.</p>
+        </article>
+
+        <article class="panel chart-panel">
+          <div class="panel-heading chart-heading">
+            <div>
+              <p class="eyebrow">Last 15 seconds</p>
+              <h2 id="secondary-chart-title">Rotational velocity</h2>
+            </div>
+            <div class="chart-legend" aria-hidden="true">
+              <span><i class="legend-live"></i> Filtered</span>
+              <span><i class="legend-threshold"></i> Threshold</span>
+            </div>
+          </div>
+          <dl class="chart-stat-row" aria-label="Secondary fall evidence chart readings">
+            <div>
+              <dt>Current</dt>
+              <dd id="secondary-current-stat">--</dd>
+            </div>
+            <div>
+              <dt>Peak</dt>
+              <dd id="secondary-peak-stat">--</dd>
+            </div>
+            <div>
+              <dt>Limit</dt>
+              <dd id="secondary-threshold-stat">220 deg/s</dd>
+            </div>
+          </dl>
+          <div class="chart-wrap">
+            <canvas
+              id="gyro-chart"
+              height="240"
+              role="img"
+              aria-label="Waiting for live secondary evidence"
+            ></canvas>
+          </div>
+          <p class="chart-summary" id="gyro-chart-summary">Waiting for live secondary evidence.</p>
+        </article>
+      </section>
+
+      <section class="detail-grid">
+        <article class="panel event-panel" aria-labelledby="event-title">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">This device session</p>
+              <h2 id="event-title">Alert activity</h2>
+            </div>
+            <div class="heading-actions">
+              <button class="text-button" id="export-events" type="button" disabled>Export CSV</button>
+              <button class="text-button" id="clear-events" type="button" disabled>Clear history</button>
+            </div>
+          </div>
+          <ol class="event-list" id="event-list">
+            <li class="empty-events" id="empty-events">
+              <span aria-hidden="true">✓</span>
+              <div>
+                <b>No alerts in this session</b>
+                <p>Detected falls and emergency-button events will appear here.</p>
+              </div>
+            </li>
+          </ol>
+        </article>
+
+        <article class="panel axis-panel" aria-labelledby="axis-title">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Raw sensor sample</p>
+              <h2 id="axis-title">Six-axis detail</h2>
+            </div>
+            <span class="sample-age" id="sample-age">Waiting</span>
+          </div>
+          <div class="axis-group">
+            <p>Acceleration · g</p>
+            <dl class="axis-values">
+              <div><dt>X</dt><dd id="axis-ax">—</dd></div>
+              <div><dt>Y</dt><dd id="axis-ay">—</dd></div>
+              <div><dt>Z</dt><dd id="axis-az">—</dd></div>
+            </dl>
+          </div>
+          <div class="axis-group">
+            <p>Rotation · °/s</p>
+            <dl class="axis-values">
+              <div><dt>X</dt><dd id="axis-gx">—</dd></div>
+              <div><dt>Y</dt><dd id="axis-gy">—</dd></div>
+              <div><dt>Z</dt><dd id="axis-gz">—</dd></div>
+            </dl>
+          </div>
+        </article>
+      </section>
+
+      <footer class="dashboard-footer">
+        <p><b>Live Tinkered prototype.</b> This is not a medical device and must not be used for real emergency monitoring.</p>
+        <p>ESP32 · MPU6050 · Tinkered bridge · No generated telemetry</p>
+      </footer>
+    </main>
+
+    <p class="sr-only" id="polite-announcer" aria-live="polite"></p>
+
+    <div class="alert-overlay" id="alert-overlay" hidden>
+      <section
+        class="alert-dialog"
+        id="alert-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <span class="alert-dialog-mark" id="alert-dialog-mark" aria-hidden="true">!</span>
+        <p class="eyebrow" id="alert-dialog-kicker">Urgent movement alert</p>
+        <h2 id="alert-dialog-title">Fall detected</h2>
+        <p id="alert-dialog-description">
+          G-force and rotational velocity crossed their thresholds inside 250 ms.
+        </p>
+        <div class="alert-evidence" id="alert-evidence">
+          <span><b id="alert-accel">—</b><small>G-force</small></span>
+          <span><b id="alert-gyro">—</b><small id="alert-secondary-label">Rotation</small></span>
+          <span><b id="alert-time">—</b><small>Detected</small></span>
+        </div>
+        <div class="delivery-state" id="delivery-state">
+          <i aria-hidden="true"></i>
+          <span>Live care-station alarm is active</span>
+        </div>
+        <div class="dialog-actions">
+          <button class="dialog-acknowledge" id="dialog-acknowledge" type="button">
+            Acknowledge and reset alarm
+          </button>
+          <button class="dialog-dismiss" id="dialog-dismiss" type="button">
+            Keep alarm active and view dashboard
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
