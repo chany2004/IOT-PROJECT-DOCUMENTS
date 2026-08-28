@@ -1,0 +1,50 @@
+[
+  {
+    "componentId": "esp32-devkit",
+    "name": "ESP32-DevKitC",
+    "quantity": 1,
+    "specs": "ESP32-WROOM-32 module, Wi-Fi & Bluetooth"
+  },
+  {
+    "componentId": "mpu6050",
+    "name": "MPU-6050 6-Axis IMU",
+    "quantity": 1,
+    "specs": "6-axis accelerometer & gyroscope, I2C"
+  },
+  {
+    "componentId": "push-button",
+    "name": "Push Button",
+    "quantity": 1,
+    "specs": "Momentary tactile switch"
+  },
+  {
+    "componentId": "breadboard-full",
+    "name": "Breadboard",
+    "quantity": 1,
+    "specs": "Full-size solderless breadboard"
+  },
+  {
+    "componentId": "wire-black",
+    "name": "Jumper Wires (Male-to-Male)",
+    "quantity": 7,
+    "specs": "Black, 22 AWG"
+  },
+  {
+    "componentId": "wire-red",
+    "name": "Jumper Wires (Male-to-Male)",
+    "quantity": 1,
+    "specs": "Red, 22 AWG"
+  },
+  {
+    "componentId": "wire-yellow",
+    "name": "Jumper Wires (Male-to-Male)",
+    "quantity": 2,
+    "specs": "Yellow, 22 AWG"
+  },
+  {
+    "componentId": "wire-green",
+    "name": "Jumper Wires (Male-to-Male)",
+    "quantity": 1,
+    "specs": "Green, 22 AWG"
+  }
+]

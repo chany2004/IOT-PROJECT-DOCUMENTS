@@ -1,0 +1,517 @@
+{
+  "version": 1,
+  "parts": [
+    {
+      "id": "bb_1",
+      "type": "breadboard-full",
+      "parentId": null,
+      "terminals": [],
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "id": "esp32_1",
+      "type": "esp32-devkit-v1",
+      "parentId": "bb_1",
+      "terminals": [
+        {
+          "name": "VIN",
+          "connection": "2b"
+        },
+        {
+          "name": "3V3",
+          "connection": "2i"
+        },
+        {
+          "name": "GND_L",
+          "connection": "3b"
+        },
+        {
+          "name": "GND_R",
+          "connection": "3i"
+        },
+        {
+          "name": "IO13",
+          "connection": "4b"
+        },
+        {
+          "name": "IO15",
+          "connection": "4i"
+        },
+        {
+          "name": "IO12",
+          "connection": "5b"
+        },
+        {
+          "name": "IO2",
+          "connection": "5i"
+        },
+        {
+          "name": "IO14",
+          "connection": "6b"
+        },
+        {
+          "name": "IO4",
+          "connection": "6i"
+        },
+        {
+          "name": "IO27",
+          "connection": "7b"
+        },
+        {
+          "name": "RX2",
+          "connection": "7i"
+        },
+        {
+          "name": "IO26",
+          "connection": "8b"
+        },
+        {
+          "name": "TX2",
+          "connection": "8i"
+        },
+        {
+          "name": "IO25",
+          "connection": "9b"
+        },
+        {
+          "name": "IO5",
+          "connection": "9i"
+        },
+        {
+          "name": "IO33",
+          "connection": "10b"
+        },
+        {
+          "name": "IO18",
+          "connection": "10i"
+        },
+        {
+          "name": "IO32",
+          "connection": "11b"
+        },
+        {
+          "name": "IO19",
+          "connection": "11i"
+        },
+        {
+          "name": "IO35",
+          "connection": "12b"
+        },
+        {
+          "name": "IO21",
+          "connection": "12i"
+        },
+        {
+          "name": "IO34",
+          "connection": "13b"
+        },
+        {
+          "name": "RX0",
+          "connection": "13i"
+        },
+        {
+          "name": "VN",
+          "connection": "14b"
+        },
+        {
+          "name": "TX0",
+          "connection": "14i"
+        },
+        {
+          "name": "VP",
+          "connection": "15b"
+        },
+        {
+          "name": "IO22",
+          "connection": "15i"
+        },
+        {
+          "name": "EN",
+          "connection": "16b"
+        },
+        {
+          "name": "IO23",
+          "connection": "16i"
+        }
+      ]
+    },
+    {
+      "id": "mpu_1",
+      "type": "mpu6050",
+      "parentId": "bb_1",
+      "terminals": [
+        {
+          "name": "INT",
+          "connection": "26c"
+        },
+        {
+          "name": "AD0",
+          "connection": "27c"
+        },
+        {
+          "name": "XCL",
+          "connection": "28c"
+        },
+        {
+          "name": "XDA",
+          "connection": "29c"
+        },
+        {
+          "name": "SDA",
+          "connection": "30c"
+        },
+        {
+          "name": "SCL",
+          "connection": "31c"
+        },
+        {
+          "name": "GND",
+          "connection": "32c"
+        },
+        {
+          "name": "VCC",
+          "connection": "33c"
+        }
+      ]
+    },
+    {
+      "id": "btn_1",
+      "type": "push-button",
+      "parentId": "bb_1",
+      "terminals": [
+        {
+          "name": "A1",
+          "connection": "39e"
+        },
+        {
+          "name": "B1",
+          "connection": "39f"
+        },
+        {
+          "name": "A2",
+          "connection": "40e"
+        },
+        {
+          "name": "B2",
+          "connection": "40f"
+        }
+      ]
+    },
+    {
+      "id": "buz_1",
+      "type": "piezo-buzzer",
+      "parentId": "bb_1",
+      "terminals": [
+        {
+          "name": "plus",
+          "connection": "44a"
+        },
+        {
+          "name": "minus",
+          "connection": "46a"
+        }
+      ]
+    },
+    {
+      "id": "r_buzz",
+      "type": "resistor-100",
+      "parentId": "bb_1",
+      "terminals": [
+        {
+          "name": "pin1",
+          "connection": "49b"
+        },
+        {
+          "name": "pin2",
+          "connection": "53b"
+        }
+      ]
+    },
+    {
+      "id": "we_mpu_1_GND",
+      "type": "wire-end",
+      "parentId": "bb_1",
+      "terminals": [
+        {
+          "name": "t1",
+          "connection": "32a"
+        }
+      ]
+    },
+    {
+      "id": "we_bb_1_rail_top_negative_2",
+      "type": "wire-end",
+      "parentId": "bb_1",
+      "terminals": [
+        {
+          "name": "t1",
+          "connection": "rail_top_negative_2"
+        }
+      ]
+    },
+    {
+      "id": "we_esp32_1_GND_L",
+      "type": "wire-end",
+      "parentId": "bb_1",
+      "terminals": [
+        {
+          "name": "t1",
+          "connection": "3a"
+        }
+      ]
+    },
+    {
+      "id": "we_bb_1_rail_top_negative_3",
+      "type": "wire-end",
+      "parentId": "bb_1",
+      "terminals": [
+        {
+          "name": "t1",
+          "connection": "rail_top_negative_3"
+        }
+      ]
+    },
+    {
+      "id": "we_btn_1_A1",
+      "type": "wire-end",
+      "parentId": "bb_1",
+      "terminals": [
+        {
+          "name": "t1",
+          "connection": "39a"
+        }
+      ]
+    },
+    {
+      "id": "we_bb_1_rail_top_negative_4",
+      "type": "wire-end",
+      "parentId": "bb_1",
+      "terminals": [
+        {
+          "name": "t1",
+          "connection": "rail_top_negative_4"
+        }
+      ]
+    },
+    {
+      "id": "we_buz_1_minus",
+      "type": "wire-end",
+      "parentId": "bb_1",
+      "terminals": [
+        {
+          "name": "t1",
+          "connection": "46d"
+        }
+      ]
+    },
+    {
+      "id": "we_bb_1_rail_top_negative_5",
+      "type": "wire-end",
+      "parentId": "bb_1",
+      "terminals": [
+        {
+          "name": "t1",
+          "connection": "rail_top_negative_5"
+        }
+      ]
+    },
+    {
+      "id": "we_mpu_1_VCC",
+      "type": "wire-end",
+      "parentId": "bb_1",
+      "terminals": [
+        {
+          "name": "t1",
+          "connection": "33a"
+        }
+      ]
+    },
+    {
+      "id": "we_esp32_1_3V3",
+      "type": "wire-end",
+      "parentId": "bb_1",
+      "terminals": [
+        {
+          "name": "t1",
+          "connection": "2j"
+        }
+      ]
+    },
+    {
+      "id": "we_mpu_1_SDA",
+      "type": "wire-end",
+      "parentId": "bb_1",
+      "terminals": [
+        {
+          "name": "t1",
+          "connection": "30a"
+        }
+      ]
+    },
+    {
+      "id": "we_esp32_1_IO21",
+      "type": "wire-end",
+      "parentId": "bb_1",
+      "terminals": [
+        {
+          "name": "t1",
+          "connection": "12j"
+        }
+      ]
+    },
+    {
+      "id": "we_mpu_1_SCL",
+      "type": "wire-end",
+      "parentId": "bb_1",
+      "terminals": [
+        {
+          "name": "t1",
+          "connection": "31a"
+        }
+      ]
+    },
+    {
+      "id": "we_esp32_1_IO22",
+      "type": "wire-end",
+      "parentId": "bb_1",
+      "terminals": [
+        {
+          "name": "t1",
+          "connection": "15j"
+        }
+      ]
+    },
+    {
+      "id": "we_btn_1_B1",
+      "type": "wire-end",
+      "parentId": "bb_1",
+      "terminals": [
+        {
+          "name": "t1",
+          "connection": "39g"
+        }
+      ]
+    },
+    {
+      "id": "we_esp32_1_IO13",
+      "type": "wire-end",
+      "parentId": "bb_1",
+      "terminals": [
+        {
+          "name": "t1",
+          "connection": "4a"
+        }
+      ]
+    },
+    {
+      "id": "we_esp32_1_IO14",
+      "type": "wire-end",
+      "parentId": "bb_1",
+      "terminals": [
+        {
+          "name": "t1",
+          "connection": "6a"
+        }
+      ]
+    },
+    {
+      "id": "we_r_buzz_pin1",
+      "type": "wire-end",
+      "parentId": "bb_1",
+      "terminals": [
+        {
+          "name": "t1",
+          "connection": "49a"
+        }
+      ]
+    },
+    {
+      "id": "we_r_buzz_pin2",
+      "type": "wire-end",
+      "parentId": "bb_1",
+      "terminals": [
+        {
+          "name": "t1",
+          "connection": "53a"
+        }
+      ]
+    },
+    {
+      "id": "we_buz_1_plus",
+      "type": "wire-end",
+      "parentId": "bb_1",
+      "terminals": [
+        {
+          "name": "t1",
+          "connection": "44d"
+        }
+      ]
+    }
+  ],
+  "wires": [
+    {
+      "id": "w_1",
+      "color": "black",
+      "from": "we_mpu_1_GND",
+      "to": "we_bb_1_rail_top_negative_2"
+    },
+    {
+      "id": "w_2",
+      "color": "black",
+      "from": "we_esp32_1_GND_L",
+      "to": "we_bb_1_rail_top_negative_3"
+    },
+    {
+      "id": "w_3",
+      "color": "black",
+      "from": "we_btn_1_A1",
+      "to": "we_bb_1_rail_top_negative_4"
+    },
+    {
+      "id": "w_4",
+      "color": "black",
+      "from": "we_buz_1_minus",
+      "to": "we_bb_1_rail_top_negative_5"
+    },
+    {
+      "id": "w_5",
+      "color": "red",
+      "from": "we_mpu_1_VCC",
+      "to": "we_esp32_1_3V3"
+    },
+    {
+      "id": "w_6",
+      "color": "yellow",
+      "from": "we_mpu_1_SDA",
+      "to": "we_esp32_1_IO21"
+    },
+    {
+      "id": "w_7",
+      "color": "green",
+      "from": "we_mpu_1_SCL",
+      "to": "we_esp32_1_IO22"
+    },
+    {
+      "id": "w_8",
+      "color": "yellow",
+      "from": "we_btn_1_B1",
+      "to": "we_esp32_1_IO13"
+    },
+    {
+      "id": "w_9",
+      "color": "orange",
+      "from": "we_esp32_1_IO14",
+      "to": "we_r_buzz_pin1"
+    },
+    {
+      "id": "w_10",
+      "color": "yellow",
+      "from": "we_r_buzz_pin2",
+      "to": "we_buz_1_plus"
+    }
+  ]
+}

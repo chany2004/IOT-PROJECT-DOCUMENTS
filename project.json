@@ -1,0 +1,13 @@
+{
+  "id": "d6370003-031b-4ae4-a015-f67d5407cd06",
+  "name": "ESP32 Emulator Startup Fix",
+  "path": "ESP32 Emulator Startup Fix",
+  "board": "esp32",
+  "boardId": "esp32-devkit-v1",
+  "boardFqbn": "esp32:esp32:esp32",
+  "createdAt": 1787409433114,
+  "updatedAt": 1787426899516,
+  "schemaVersion": 1,
+  "exportedAt": "2026-08-22T19:28:47.204Z",
+  "exportedBy": "tinkered-app/1.0"
+}
