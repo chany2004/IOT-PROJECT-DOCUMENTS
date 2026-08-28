@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "FallGuard Tinkered Live Bridge",
+  "version": "1.2.0",
+  "description": "Forwards live Tinkered fall-detector telemetry to the local FallGuard dashboard.",
+  "permissions": ["sidePanel", "scripting", "tabs"],
+  "host_permissions": [
+    "https://tinkered.ai/*",
+    "https://*.tinkered.ai/*",
+    "http://127.0.0.1/*"
+  ],
+  "background": {"service_worker": "background.js"},
+  "action": {"default_title": "Open CareGuard live monitor"},
+  "side_panel": {"default_path": "panel.html"},
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; frame-src http://127.0.0.1:8765"
+  },
+  "content_scripts": [{
+    "matches": ["https://tinkered.ai/*", "https://*.tinkered.ai/*"],
+    "js": ["content.js"],
+    "run_at": "document_idle",
+    "all_frames": true,
+    "match_about_blank": true,
+    "match_origin_as_fallback": true
+  }, {
+    "matches": ["http://127.0.0.1/*"],
+    "js": ["dashboard-clock.js"],
+    "run_at": "document_idle"
+  }]
+}
+
