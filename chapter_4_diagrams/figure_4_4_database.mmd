@@ -1,0 +1,15 @@
+erDiagram
+    users o|--o{ patients : caregiver
+    rooms o|--o| patients : accommodates
+    patients ||--o{ device_assignments : has
+    devices ||--o{ device_assignments : assigned_through
+    patients ||--o{ sensor_readings : has
+    devices ||--o{ sensor_readings : source
+    patients ||--o{ fall_events : has
+    devices ||--o{ fall_events : source
+    sensor_readings o|--o{ fall_events : supports
+    users o|--o{ fall_events : acknowledges
+    fall_events ||--o{ camera_verifications : has
+    devices o|--o{ camera_verifications : camera_reference
+    fall_events ||--o{ notification_deliveries : has
+    users o|--o{ notification_deliveries : recipient

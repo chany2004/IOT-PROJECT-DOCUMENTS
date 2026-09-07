@@ -1,0 +1,17 @@
+flowchart LR
+    E["ESP32 DevKit V1"]
+    M["MPU6050"]
+    B["Emergency button"]
+    G["Common ground for shared-supply assembly"]
+    P["Regulated 5V supply"]
+    C["ESP32-CAM with OV2640"]
+
+    E -->|"3.3V to VCC"| M
+    E <-->|"GPIO 21 / SDA; GPIO 22 / SCL"| M
+    E ---|"GPIO 27; INPUT_PULLUP"| B
+    B --- G
+    M --- G
+    E --- G
+    P -->|"5V input"| C
+    C --- G
+    P ---|"Supply ground"| G

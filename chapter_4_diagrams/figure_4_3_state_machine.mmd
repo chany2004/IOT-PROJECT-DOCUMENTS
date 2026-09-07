@@ -1,0 +1,8 @@
+stateDiagram-v2
+    [*] --> FALL_IDLE
+    FALL_IDLE --> FALL_IDLE: Valid sample without qualifying trigger
+    FALL_IDLE --> FALL_WAIT_GYRO: A >= At and cooldown elapsed
+    FALL_WAIT_GYRO --> FALL_WAIT_GYRO: Within W and angular velocity below threshold
+    FALL_WAIT_GYRO --> POSSIBLE_FALL: Within W and angular velocity >= threshold
+    FALL_WAIT_GYRO --> FALL_IDLE: Window expired without confirmation
+    POSSIBLE_FALL --> FALL_IDLE: Create alert action and restart cooldown

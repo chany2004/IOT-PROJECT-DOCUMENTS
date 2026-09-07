@@ -1,0 +1,300 @@
+# CHAPTER IV
+## PROTOTYPE DESIGN AND LOCAL SIMULATION / SOFTWARE IMPLEMENTATION
+
+This chapter presents the prototype design and software source implementation of the Wi-Fi Connected Patient-End Fall Detection and Emergency Alert System. The available project contains a FastAPI backend, PostgreSQL models and migration files, and a React/Vite dashboard for synthetic event processing. Physical hardware assembly, direct device ingestion, and actual camera capture remain outside the demonstrated scope.
+
+The discussion distinguishes features present in the source code from proposed hardware behavior and evidence still required from execution. The existence of database models and migration files does not establish that the PostgreSQL database has been created or that migrations have been successfully applied. Consequently, this chapter does not claim a completed physical prototype, verified end-to-end hardware integration, or measured fall-detection performance.
+
+### 4.1 Prototype Status and System Architecture
+
+The project follows a software-first development approach. Authenticated users select simulation scenarios, and the backend is designed to create synthetic readings, events, and camera-verification metadata for display in the dashboard.
+
+| Component | Status supported by the available material |
+|---|---|
+| React/Vite dashboard | Source code is available for login, monitoring views, event review, and simulation controls. |
+| FastAPI backend | Source code is available for authentication, validation, record management, and simulation endpoints. |
+| PostgreSQL | Models and an initial migration are available; database creation and successful migration execution require recorded evidence. |
+| ESP32 and MPU6050 | A separate firmware sample and proposed wiring are available; physical integration with the web system has not been demonstrated. |
+| ESP32-CAM | Network capture and private image storage are proposed; current camera records contain simulated metadata. |
+| Deployment | The configuration targets local development. Cloud deployment has not been demonstrated. |
+
+```mermaid
+flowchart TB
+    subgraph SOFTWARE["Local software design — source code available"]
+        U["Administrator or caregiver"] --> D["React / Vite dashboard"]
+        D -->|"JWT-authenticated REST requests"| A["FastAPI"]
+        A --> S["Simulation handlers"]
+        S -->|"Synthetic records"| P[("PostgreSQL schema")]
+        A <-->|"Read and update records"| P
+        A -->|"JSON responses"| D
+    end
+    subgraph HARDWARE["Planned physical integration"]
+        M["MPU6050 and emergency button"] --> E["ESP32 motion controller"]
+        C["ESP32-CAM HTTP server"]
+    end
+    E -.->|"Future authenticated event submission"| A
+    A -.->|"Future snapshot request"| C
+    C -.->|"Future JPEG response"| A
+```
+
+*Figure 4.1. Local software architecture and planned hardware integration.*
+
+Solid connections represent relationships defined in the software design; dashed connections represent future hardware integration. The diagram is a design illustration and does not serve as evidence that the complete system has been executed.
+
+The separate firmware sample uses MQTT, whereas the web application exposes HTTP REST endpoints. An HTTP firmware adaptation or an MQTT-to-HTTP bridge is therefore required before these components can communicate. This chapter adopts HTTP event submission as the proposed integration direction; that adaptation is not presented as completed.
+
+### 4.2 Proposed Hardware and Wiring
+
+The proposed hardware consists of an ESP32 DevKit V1, an MPU6050, an emergency push button, and an ESP32-CAM with an OV2640 camera. The main controller is intended to process motion and button input, while the camera supplies an image for caregiver review.
+
+| Component connection | Proposed connection | Function |
+|---|---|---|
+| MPU6050 VCC | ESP32 3.3V | Sensor power |
+| MPU6050 GND | ESP32 GND | Ground reference |
+| MPU6050 SDA | ESP32 GPIO 21 | I²C data |
+| MPU6050 SCL | ESP32 GPIO 22 | I²C clock |
+| Button terminal 1 | ESP32 GPIO 27 | Emergency input using INPUT_PULLUP |
+| Button terminal 2 | GND | Pulls the input LOW when pressed |
+| ESP32-CAM 5V | Regulated 5V supply | Camera-board power |
+| ESP32-CAM GND | Supply ground | Camera-board ground |
+| OV2640 | ESP32-CAM camera connector | Image acquisition |
+
+```mermaid
+flowchart LR
+    E["ESP32 DevKit V1"]
+    M["MPU6050"]
+    B["Emergency button"]
+    G["Common ground for shared-supply assembly"]
+    P["Regulated 5V supply"]
+    C["ESP32-CAM with OV2640"]
+
+    E -->|"3.3V to VCC"| M
+    E <-->|"GPIO 21 / SDA; GPIO 22 / SCL"| M
+    E ---|"GPIO 27; INPUT_PULLUP"| B
+    B --- G
+    M --- G
+    E --- G
+    P -->|"5V input"| C
+    C --- G
+    P ---|"Supply ground"| G
+```
+
+*Figure 4.2. Proposed sensor, emergency-button, and camera power connections.*
+
+The main ESP32 is intended to use USB power during development. The MPU6050 receives 3.3V, and the ESP32-CAM receives regulated 5V. The camera and main controller communicate through the local network rather than through a direct signal wire.
+
+The earlier wiring design specifies GPIO 27 for the button, but the separate firmware sample's startup messages identify IO13. The actual assignment is referenced through PIN_BUTTON in config.h, whose contents were not supplied. GPIO 27 is therefore retained here as the proposed wiring assignment; the firmware configuration and wiring must be reconciled before assembly.
+
+Figure 4.2 is not a photograph or simulator screenshot. A later hardware implementation claim must be accompanied by an actual photograph or simulator capture showing the boards, sensor, button, and power connections.
+
+### 4.3 Fall-Detection Logic and Reproducibility
+
+The firmware sample defines two detection states: FALL_IDLE and FALL_WAIT_GYRO. It calculates acceleration magnitude and angular-velocity magnitude from the three sensor axes:
+
+A = √(ax² + ay² + az²)
+
+Ω = √(gx² + gy² + gz²)
+
+In that sample, acceleration is represented in g and angular velocity in degrees per second. A denotes total acceleration magnitude, including the contribution of gravity; it is not a gravity-compensated measurement. These units must be documented consistently when hardware data are later transferred to the API and displayed.
+
+| Parameter | Firmware configuration symbol | Numerical value available for this chapter |
+|---|---|---|
+| Acceleration threshold, Aₜ | ACCEL_SPIKE_THRESHOLD_G | Not supplied; requires the actual configuration and calibration record. |
+| Angular-velocity threshold, Ωₜ | GYRO_THRESHOLD_DPS | Not supplied; requires the actual configuration and calibration record. |
+| Sampling interval, Δt | SENSOR_READ_INTERVAL_MS | Not supplied; nominal sampling frequency is 1000 / Δt Hz when Δt is in milliseconds. |
+| Gyroscope confirmation window, W | FALL_GYRO_WINDOW_MS | Not supplied. |
+| Fall-alert cooldown, C | FALL_COOLDOWN_MS | Not supplied. |
+
+These are configuration requirements, not experimental results. Numeric values cannot be inferred from the names of the constants. The measured sampling rate may also differ from the nominal rate because sensor access and network operations take time.
+
+The proposed state specification is:
+
+1. During FALL_IDLE, read valid motion samples and monitor the emergency button.
+2. When A reaches or exceeds Aₜ and the cooldown has elapsed, record the trigger time and enter FALL_WAIT_GYRO.
+3. During FALL_WAIT_GYRO, generate a possible-fall event if Ω reaches or exceeds Ωₜ within W.
+4. If W expires without confirmation, return to FALL_IDLE.
+5. After a possible-fall event, restart the cooldown and continue monitoring.
+6. Handle a manual emergency independently of motion confirmation and camera availability.
+
+```mermaid
+stateDiagram-v2
+    [*] --> FALL_IDLE
+    FALL_IDLE --> FALL_IDLE: Valid sample without qualifying trigger
+    FALL_IDLE --> FALL_WAIT_GYRO: A >= At and cooldown elapsed
+    FALL_WAIT_GYRO --> FALL_WAIT_GYRO: Within W and angular velocity below threshold
+    FALL_WAIT_GYRO --> POSSIBLE_FALL: Within W and angular velocity >= threshold
+    FALL_WAIT_GYRO --> FALL_IDLE: Window expired without confirmation
+    POSSIBLE_FALL --> FALL_IDLE: Create alert action and restart cooldown
+```
+
+*Figure 4.3. Proposed two-stage fall-detection state transitions.*
+
+POSSIBLE_FALL represents an event-generation action, not an additional state in the supplied firmware enum. A button press is handled separately and is intended to create a manual-emergency event without waiting for the fall state machine.
+
+One implementation detail remains unresolved: the supplied firmware checks the gyroscope threshold before checking whether the confirmation window has expired. As written, it may accept a qualifying sample after the intended window. The proposed specification in Figure 4.3 requires both the time and angular-velocity conditions to be satisfied. Boundary testing and a corresponding firmware correction are required before claiming compliance with that specification.
+
+The two-stage condition and cooldown are intended to reduce repeated or isolated motion triggers. They do not establish accuracy. Abrupt non-fall movements may satisfy both thresholds, while a slow fall or a fall with little rotation may fail to satisfy them. A cooldown may also suppress a second event that occurs soon after the first. Future evaluation must therefore include both falls and representative daily activities, with sensor placement recorded.
+
+The web simulation directly creates predefined event types. It does not execute this firmware state machine, and its synthetic sensor values are not evidence that the detector correctly classified a fall. Confidence remains unspecified unless supported by a tested scoring method.
+
+### 4.4 Backend Design and Local Event Processing
+
+The FastAPI source defines REST endpoints under the /api/v1 prefix. Pydantic schemas validate request structures and allowed values, while SQLAlchemy models describe persistence in PostgreSQL. OpenAPI documentation is configured at /docs.
+
+| API area | Principal routes defined in the source |
+|---|---|
+| Authentication | POST /api/v1/auth/login; GET /api/v1/auth/me |
+| Patients | GET and POST /api/v1/patients; GET and PATCH /api/v1/patients/{patient_id} |
+| Rooms | GET and POST /api/v1/rooms; PATCH /api/v1/rooms/{room_id} |
+| Devices | GET and POST /api/v1/devices; GET /api/v1/devices/{device_id} |
+| Assignments | GET /api/v1/device-assignments; POST /api/v1/devices/{device_id}/assign |
+| Sensor records | GET /api/v1/sensor-readings |
+| Events | GET and POST /api/v1/events; GET /api/v1/events/{event_id}; PATCH /api/v1/events/{event_id}/status |
+| Camera metadata | GET and POST /api/v1/events/{event_id}/camera-verifications |
+| Simulation | POST /api/v1/simulation/normal-motion, /possible-fall, /manual-emergency, /camera-response, and /camera-timeout |
+
+All five simulation route names in the final row share the /api/v1/simulation prefix.
+
+The normal-motion scenario creates a synthetic sensor record. The possible-fall scenario creates a synthetic reading, a possible-fall event, and simulated camera metadata. The manual-emergency scenario permits an event without a sensor reading and does not require camera verification. Camera-response and camera-timeout scenarios represent simulated outcomes; they do not contact camera hardware or measure an actual timeout.
+
+Event statuses are pending, acknowledged, resolved, and false_alarm. The status-update route records incident notes and, when acknowledged, the acknowledging user and time. These are caregiver workflow statuses, distinct from the firmware detection states.
+
+The source contains an event idempotency-key check and a uniqueness constraint intended to prevent duplicate fall-event rows. This does not establish duplicate-free processing for every related record or every concurrent request. In particular, repeated simulation requests may append additional camera records even when the original event is reused.
+
+Notification-delivery rows are marked as simulated. Their presence does not establish that an email, SMS, or external alert was delivered.
+
+### 4.5 PostgreSQL Database Design
+
+PostgreSQL is the only application database specified and supported by the project configuration. SQLAlchemy models and an Alembic migration define nine tables. No database creation or migration success is claimed solely from the presence of these files.
+
+| Table | Purpose |
+|---|---|
+| users | Human accounts, roles, and password hashes |
+| rooms | Room information |
+| patients | Patient information, room assignment, and caregiver reference |
+| devices | Device identity, type, status, and device-key hash |
+| device_assignments | Patient-device assignment history |
+| sensor_readings | Synthetic motion records and their patient/device references |
+| fall_events | Fall or emergency events, status, notes, and acknowledgement fields |
+| camera_verifications | Verification status, simulation flag, and optional evidence reference |
+| notification_deliveries | Notification metadata, recipient reference, and simulation status |
+
+```mermaid
+erDiagram
+    users o|--o{ patients : caregiver
+    rooms o|--o| patients : accommodates
+    patients ||--o{ device_assignments : has
+    devices ||--o{ device_assignments : assigned_through
+    patients ||--o{ sensor_readings : has
+    devices ||--o{ sensor_readings : source
+    patients ||--o{ fall_events : has
+    devices ||--o{ fall_events : source
+    sensor_readings o|--o{ fall_events : supports
+    users o|--o{ fall_events : acknowledges
+    fall_events ||--o{ camera_verifications : has
+    devices o|--o{ camera_verifications : camera_reference
+    fall_events ||--o{ notification_deliveries : has
+    users o|--o{ notification_deliveries : recipient
+```
+
+*Figure 4.4. Relationships defined by the PostgreSQL data model.*
+
+The model uses UUID identifiers, foreign keys, and timezone-aware timestamps. A unique patient room reference limits a room to one currently assigned patient. A partial unique index limits a device to one current patient assignment. The assignment route permits one current device of each supported type per patient, allowing an ESP32 DevKit V1 and an ESP32-CAM to serve the same patient.
+
+Possible-fall events require an associated sensor record. Manual-emergency events may omit that association. Confidence is nullable. For simulated camera records, a database constraint requires both image_path and confidence to remain null. Indexes support common event-time, patient, device, and event-status lookups.
+
+The schema is intended to preserve relationships and identify synthetic data. Screenshots of the applied schema and linked records are still required to substantiate an executed database workflow.
+
+### 4.6 Proposed Camera Communication and Verification
+
+A single communication mechanism is specified for future integration. The ESP32-CAM is proposed to run a local HTTP server exposing a capture endpoint. The main ESP32 submits the event to FastAPI. After saving the event, the backend requests a JPEG from the ESP32-CAM and stores the returned image.
+
+Both boards and the backend host must be reachable on the same local Wi-Fi/LAN. The proposed camera address is maintained through a DHCP reservation and a backend camera-address configuration associated with the registered camera device. The main ESP32 only needs the backend address; it does not need to discover the camera's IP address.
+
+```mermaid
+sequenceDiagram
+    participant E as Main ESP32
+    participant A as FastAPI
+    participant P as PostgreSQL
+    participant C as ESP32-CAM HTTP server
+    participant F as Private image storage
+    participant D as Caregiver dashboard
+
+    Note over E,D: Proposed physical flow — not yet implemented
+    E->>A: Submit possible-fall event with event key
+    A->>P: Save event and pending camera metadata
+    A-->>E: Return event identifier
+    A->>C: Authenticated GET /capture
+    alt Valid JPEG received within configured timeout
+        C-->>A: image/jpeg response body
+        A->>F: Save JPEG under generated event path
+        A->>P: Save image_path and completed status
+    else No valid JPEG before the timeout
+        A->>P: Record timeout; preserve event
+    end
+    D->>A: Request event and verification information
+    A->>P: Read authorized event records
+    A-->>D: Return status and available evidence reference
+    Note over A,D: Any image retrieval requires authorization
+```
+
+*Figure 4.5. Proposed backend-coordinated camera capture and verification sequence.*
+
+In this design, the camera returns JPEG bytes in its HTTP response. It does not independently upload an image to FastAPI. A proposed private storage location is captures/{event_id}/{capture_id}.jpg beneath a configured backend storage directory. The database would store this relative reference in camera_verifications.image_path. An authorized retrieval endpoint would resolve that reference after checking the caregiver's access to the patient.
+
+The capture endpoint, camera-address configuration, request authentication, background capture task, image validation, private storage, and authorized image retrieval remain to be implemented. The path above is a proposed naming convention, not an existing snapshot.
+
+A timeout must leave the event available for caregiver attention, with no image path. A capture attempt that produces no valid JPEG within the deadline is recorded as timeout, with an explanatory result. Camera failure must not cancel the emergency event.
+
+In the current simulation design, camera records use is_simulated = true and contain no image. A completed camera status means the simulated metadata operation completed; it does not confirm that a patient fell. Actual visual verification would be performed by a caregiver. No computer-vision or automatic image-based fall classifier is established by this project.
+
+### 4.7 Frontend and Local Deployment Design
+
+The React/Vite source contains login, dashboard overview, patient, room, device, event-history, and event-detail views. It also provides simulation controls, motion-history visualization, camera-metadata review, incident notes, and status updates.
+
+The interface identifies the environment as simulated and labels generated records accordingly. Camera review presents metadata and an explanation that no snapshot is available. Missing confidence is displayed as not provided. Sensor-axis values in the current interface do not establish a calibrated hardware unit contract; explicit units and conversions must be aligned before real sensor integration.
+
+The dashboard retrieves data through REST requests on loading, refresh, and relevant user actions. Continuous hardware streaming or guaranteed immediate delivery is not demonstrated. User-account administration is not claimed as a completed feature because a user-management API and corresponding management workflow are not present in the reviewed implementation.
+
+The local configuration uses Vite on port 5173 and FastAPI/Uvicorn on port 8000. Docker Compose defines PostgreSQL and backend services; PostgreSQL is exposed to the host on port 5433 and uses port 5432 inside the Compose network. Database migrations and synthetic seeding are separate setup steps. This is a local software prototype configuration, with local IoT integration still pending and no demonstrated cloud deployment.
+
+### 4.8 Authentication, Security, and Failure Handling
+
+Security is described according to what is visible in the source and what remains necessary for physical integration.
+
+| Area | Current source behavior and remaining requirement |
+|---|---|
+| Human authentication | Login verifies a stored password hash and issues a JWT bearer token. Token validation checks expiration, issuer, and audience. The configured default token lifetime is 480 minutes. |
+| Device authentication | Registration creates a device key and stores its SHA-256 hash. X-Device-Key is reserved; the current authentication dependency rejects requests containing it because physical ingestion is disabled. |
+| Access control | Administrator checks protect management routes, and caregiver filtering exists for patient-related records. Camera metadata routes still need equivalent patient-level authorization checks. |
+| Configuration and credentials | Environment variables are supported, but local demo defaults also exist. Secure deployment requires replacing those defaults and protecting runtime secrets. |
+| HTTPS | Local configuration uses HTTP. Transport encryption for deployed API and camera communication remains a requirement. |
+| Credential lifecycle | Device-key rotation, token revocation, and a reviewed session policy remain to be implemented or verified. |
+| Audit trail | Acknowledgement identity and timestamps are recorded. These fields do not constitute a complete audit history of access and modifications. |
+| Stored data and images | Encrypted database/backups, backup recovery verification, and access-controlled real-image storage are not demonstrated. |
+
+The firmware sample includes connection retries with increasing backoff and continues attempting local monitoring. However, its publish function returns when MQTT is disconnected and contains no demonstrated event queue or replay mechanism. A local alarm therefore does not establish successful backend delivery, and an event generated during disconnection may be lost.
+
+Reliable offline delivery remains a future requirement: retain the event and its stable identifier, reconnect, retry transmission, and mark it delivered only after backend acknowledgement. Persistence across a device restart would require durable storage. Neither queue behavior nor restart recovery is claimed in this chapter.
+
+Other limitations include the need to verify button debounce, sensor-failure recovery, timing under network load, and error handling under concurrent requests. These require execution evidence rather than descriptive statements alone.
+
+### 4.9 Evidence Requirements and Scope of Evaluation
+
+The diagrams in this chapter document architecture, wiring, state transitions, database relationships, and proposed communication. They are not substitutes for photographs, execution screenshots, or measured results.
+
+| Implementation claim | Evidence required |
+|---|---|
+| Hardware assembled | Actual photograph or simulator screenshot showing ESP32, MPU6050, button, ESP32-CAM, and power connections |
+| Backend running | Uvicorn execution evidence and the actual FastAPI /docs page |
+| API successfully processes an event | Actual request and response from a recorded local run |
+| PostgreSQL stores the event | Database query or screenshot showing the corresponding event identifier and related records |
+| Dashboard receives the event | Actual interface screenshot showing the same identifier and simulation label |
+| Detector is reproducible | Complete firmware configuration, units, sampling information, sensor placement, and timed test traces |
+| Camera captures evidence | Actual hardware capture and a verified storage/reference workflow after integration |
+
+Any software execution evidence must be labelled as a local simulation when it uses generated records. Synthetic values may illustrate data structures and user workflows, but they cannot establish physical detection accuracy, reliability, or response time.
+
+The previously suggested values of 850 ms response time, 9/10 reliability, 8/10 accuracy, and 10/10 connectivity are excluded as findings because no measurement records supporting them were supplied. Chapter V must report only documented observations from actual tests, or describe the evaluation plan if testing has not yet occurred.
+
+The conclusion must maintain the same status as this chapter: software source and a local simulation workflow have been prepared; PostgreSQL schema definitions are available; and physical assembly, hardware-to-backend communication, camera capture, and measured performance remain to be established. A statement that PostgreSQL has been created is appropriate only after successful migration execution and database evidence are available.

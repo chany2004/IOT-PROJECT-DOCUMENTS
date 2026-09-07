@@ -1,0 +1,24 @@
+sequenceDiagram
+    participant E as Main ESP32
+    participant A as FastAPI
+    participant P as PostgreSQL
+    participant C as ESP32-CAM HTTP server
+    participant F as Private image storage
+    participant D as Caregiver dashboard
+
+    Note over E,D: Proposed physical flow — not yet implemented
+    E->>A: Submit possible-fall event with event key
+    A->>P: Save event and pending camera metadata
+    A-->>E: Return event identifier
+    A->>C: Authenticated GET /capture
+    alt Valid JPEG received within configured timeout
+        C-->>A: image/jpeg response body
+        A->>F: Save JPEG under generated event path
+        A->>P: Save image_path and completed status
+    else No valid JPEG before the timeout
+        A->>P: Record timeout; preserve event
+    end
+    D->>A: Request event and verification information
+    A->>P: Read authorized event records
+    A-->>D: Return status and available evidence reference
+    Note over A,D: Any image retrieval requires authorization

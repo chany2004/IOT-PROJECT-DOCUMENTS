@@ -1,56 +1,36 @@
-# LihokSafe live Tinkered dashboard
+# Wi-Fi Connected Patient-End Fall Detection and Emergency Alert System
 
-This dashboard displays the actual MPU6050 values and fall state from the open Tinkered simulator. It does not generate demo sensor samples.
+This repository contains a local-development prototype for reviewing simulated patient fall and emergency events. It runs a FastAPI API, PostgreSQL database, and React/Vite dashboard. Records created by the built-in simulation routes are explicitly marked as simulated; no ESP32, MPU6050, or camera hardware is required or assumed to be connected.
 
-## Start the live monitor
+## Start locally
 
-From the project root, double-click `start-dashboard.cmd`, or run:
+1. Copy `.env.example` to `.env` and change the secrets for anything beyond a local demo.
+2. Start PostgreSQL and the API:
 
-```powershell
-.\start-dashboard.cmd
-```
+   ```powershell
+   docker compose up --build
+   ```
 
-The bridge listens only on `http://127.0.0.1:8765` and opens the dashboard locally.
+3. In a second terminal, start the dashboard:
 
-## Connect Tinkered
+   ```powershell
+   cd frontend
+   npm install
+   npm run dev
+   ```
 
-1. In Chrome, open `chrome://extensions` and enable **Developer mode**.
-2. Choose **Load unpacked**, then select `dashboard/extension` from this project.
-3. Open the Tinkered project and start its simulation.
-4. Keep the Tinkered tab open. The extension forwards its real Serial Monitor and MPU6050 controls to the local bridge.
-5. Open `http://127.0.0.1:8765/`, or use **Open CareGuard Monitor** inside Tinkered.
+Open <http://localhost:5173>. The API documentation is at <http://localhost:8000/docs>.
 
-The dashboard connection checklist turns green in this order: local monitor, Tinkered bridge, then live telemetry.
+The API container uses PostgreSQL at the internal `db:5432` address. From the host, PostgreSQL is exposed on port `5433` for migrations and inspection. Stop the stack with `docker compose down`; add `-v` only when you intentionally want to remove the local database volume.
 
-## Fall decision
+## Demo accounts
 
-When gyroscope telemetry is available, a fall requires both an acceleration spike of at least `2.20 g` and rotational velocity of at least `220 deg/s` within the correlation window.
+The development seed values are controlled by `SEED_ADMIN_PASSWORD` and `SEED_CAREGIVER_PASSWORD`. The default accounts are `admin@example.com` and `caregiver@example.com`. Change these values before sharing a running instance.
 
-Tinkered may expose only its accelerometer controls while leaving the gyroscope at zero. In that case, the bridge uses a simulator-specific real-data fallback:
+## Project layout
 
-- hold a normal position close to `(0, 0, 1 g)` long enough to establish a baseline;
-- an acceleration-vector spike of at least `2.20 g` plus a posture change of at least `35 deg` latches a fall alert.
-- for quick simulator testing before a baseline is armed, a strong impact of at least `2.80 g` with at least `35 deg` posture change from the default upright vector also latches a fall alert.
+`backend/` contains the FastAPI application, SQLAlchemy models, Alembic migrations, and tests. `frontend/` contains the Vite React dashboard. `database/` contains the optional SQL seed reference and PostgreSQL notes. The compose file starts only PostgreSQL and the API; the frontend remains a normal Vite development server for fast iteration.
 
-The fallback still uses only values read from the Tinkered MPU6050 UI; it does not synthesize samples. Fall and emergency alerts remain visibly latched until **Acknowledge alert** is pressed. Acknowledgement resets the active alarm but preserves the incident record and session counters. **Clear history** is a separate action and is disabled while an alarm is active.
+## Hardware boundary
 
-The ESP32 firmware also mirrors this simulator fallback so the piezo buzzer sounds when the same fall is detected in Tinkered. The buzzer is driven with a square-wave tone on GPIO14 through the 100 ohm resistor; a plain HIGH output is not enough for the passive piezo component.
-
-## Dashboard functions
-
-- Shows a persistent **Safe**, **Validating**, **Fall detected**, **Emergency SOS**, or **Offline** state.
-- Displays live G-force, rotation/posture evidence, all six sensor axes, thresholds, and rolling charts.
-- Separately counts confirmed falls and emergency-button presses for the current session.
-- Opens an urgent alert dialog with captured evidence; the dialog can be dismissed while the alarm remains active.
-- Preserves acknowledged events, exports them as CSV, and clears history only on explicit request.
-
-## Verify
-
-```powershell
-node --test dashboard/tests/*.test.js
-& "$env:USERPROFILE\.platformio\penv\Scripts\python.exe" -m unittest dashboard.tests.test_live_bridge
-```
-
-Edits to local firmware do not automatically replace the sketch already stored in the online Tinkered project. The bridge supports the current `[IMU]` serial format as well as structured `@@FG1` telemetry.
-
-This dashboard is a project prototype, not a medical device.
+Simulation endpoints generate synthetic readings, events, and camera verification metadata. Camera responses intentionally do not contain a stock or fabricated image. Future device integrations should use the reserved `X-Device-Key` mechanism after real device authentication and evidence handling are implemented.

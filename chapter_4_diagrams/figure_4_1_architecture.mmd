@@ -1,0 +1,16 @@
+flowchart TB
+    subgraph SOFTWARE["Local software design — source code available"]
+        U["Administrator or caregiver"] --> D["React / Vite dashboard"]
+        D -->|"JWT-authenticated REST requests"| A["FastAPI"]
+        A --> S["Simulation handlers"]
+        S -->|"Synthetic records"| P[("PostgreSQL schema")]
+        A <-->|"Read and update records"| P
+        A -->|"JSON responses"| D
+    end
+    subgraph HARDWARE["Planned physical integration"]
+        M["MPU6050 and emergency button"] --> E["ESP32 motion controller"]
+        C["ESP32-CAM HTTP server"]
+    end
+    E -.->|"Future authenticated event submission"| A
+    A -.->|"Future snapshot request"| C
+    C -.->|"Future JPEG response"| A
