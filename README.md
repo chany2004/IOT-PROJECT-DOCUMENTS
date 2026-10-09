@@ -1,4 +1,17 @@
-# Wi-Fi Connected Patient-End Fall Detection and Emergency Alert System
+# Patient Watch — source code and project documents
+
+The current physical-device implementation is in **[source-code/patient-watch/](source-code/patient-watch/)**:
+
+- ESP32 motion sensor and emergency-button firmware, with Wi-Fi provisioning.
+- Separate ESP32-CAM firmware with authenticated, fresh-frame JPEG snapshots.
+- Laravel/PHP patient monitoring application, Blade dashboard, PostgreSQL migrations and tests.
+- Optional FastAPI/YOLO pose-verification service.
+
+See the [current source README](source-code/patient-watch/README.md) for setup and safety boundaries. Only source files and credential-free configuration examples are included. Generate your own credentials privately; no working passwords, API keys, device secrets, database records or patient images are provided.
+
+The pre-existing project documents and prototype remain below and in their original directories. The legacy root-level FastAPI/React prototype is **not** the current Laravel hardware application. Its containers and simulation endpoints are separate from the physical-device source.
+
+## Legacy prototype documentation (preserved)
 
 This repository contains a local-development prototype for reviewing simulated patient fall and emergency events. It runs a FastAPI API, PostgreSQL database, and React/Vite dashboard. Records created by the built-in simulation routes are explicitly marked as simulated; no ESP32, MPU6050, or camera hardware is required or assumed to be connected.
 

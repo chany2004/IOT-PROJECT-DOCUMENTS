@@ -1,0 +1,5 @@
+fastapi>=0.116,<1
+numpy>=2.2,<3
+pillow>=11.3,<13
+ultralytics>=8.4,<9
+uvicorn[standard]>=0.35,<1

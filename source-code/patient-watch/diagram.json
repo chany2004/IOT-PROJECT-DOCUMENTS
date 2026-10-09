@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "author": "Patient Fall Detection Project",
+  "editor": "wokwi",
+  "parts": [
+    {"type":"wokwi-esp32-devkit-v1","id":"esp","top":-125,"left":-390,"attrs":{}},
+    {"type":"wokwi-breadboard-half","id":"bb1","top":-200,"left":-80,"attrs":{}},
+    {"type":"wokwi-mpu6050","id":"imu","top":40,"left":330,"attrs":{}},
+    {"type":"wokwi-led","id":"red","top":-191,"left":93.8,"attrs":{"color":"red"}},
+    {"type":"wokwi-resistor","id":"r3","top":-115.4,"left":79.85,"rotate":90,"attrs":{"value":"220"}},
+    {"type":"wokwi-pushbutton-6mm","id":"emergency","top":-109.6,"left":161.2,"rotate":90,"attrs":{"color":"red","xray":"1"}},
+    {"type":"wokwi-buzzer","id":"bz","top":205,"left":350,"attrs":{"volume":"0.1"}},
+    {"type":"wokwi-text","id":"title","top":-275,"left":-75,"attrs":{"text":"FALL DETECTION - BREADBOARD WIRING"}},
+    {"type":"wokwi-text","id":"labelRed","top":-240,"left":91,"attrs":{"text":"G23 RED"}},
+    {"type":"wokwi-text","id":"labelButton","top":-240,"left":158,"attrs":{"text":"G27 BUTTON"}}
+  ],
+  "connections": [
+    ["esp:TX0","$serialMonitor:RX","",[]],
+    ["esp:RX0","$serialMonitor:TX","",[]],
+
+    ["esp:3V3","imu:VCC","red",["h25","v235","h410"]],
+    ["esp:GND.1","imu:GND","black",["h20","v250","h420"]],
+    ["esp:D21","imu:SDA","green",["h35","v190","h385"]],
+    ["esp:D22","imu:SCL","blue",["h30","v205","h395"]],
+
+    ["esp:GND.2","bb1:bn.1","black",["h20","v185","h165"]],
+
+    ["red:A","bb1:19t.a","",["$bb"]],
+    ["red:C","bb1:18t.a","",["$bb"]],
+    ["r3:1","bb1:18t.b","",["$bb"]],
+    ["r3:2","bb1:18b.f","",["$bb"]],
+    ["esp:D23","bb1:19t.c","red",["h50","v-115","h210"]],
+    ["bb1:18b.g","bb1:bn.18","black",["v0"]],
+
+    ["emergency:1.l","bb1:26t.e","",["$bb"]],
+    ["emergency:2.l","bb1:24t.e","",["$bb"]],
+    ["emergency:1.r","bb1:26b.f","",["$bb"]],
+    ["emergency:2.r","bb1:24b.f","",["$bb"]],
+    ["esp:D27","bb1:24t.d","orange",["h25","v-75","h310"]],
+    ["bb1:26t.d","bb1:bn.26","black",["v0"]],
+
+    ["esp:D25","bz:2","purple",["h30","v300","h420"]],
+    ["bz:1","bb1:bn.30","black",["v-30","h-80","v-150"]]
+  ],
+  "dependencies": {}
+}

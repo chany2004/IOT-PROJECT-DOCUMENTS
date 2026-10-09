@@ -1,0 +1,222 @@
+/* Device actions stay in focused dialogs; the registry cards remain stable. */
+.device-workspace .device-action-dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    z-index: 90;
+    width: min(590px, calc(100vw - 32px));
+    max-width: none;
+    max-height: min(640px, calc(100dvh - 32px));
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid #d5e5dd;
+    border-radius: 20px;
+    color: #173a32;
+    background: #fff;
+    box-shadow: 0 28px 90px rgba(9, 38, 30, .28);
+    transform: translate(-50%, -50%);
+}
+.device-workspace .device-action-dialog[open] {
+    display: flex;
+    flex-direction: column;
+}
+.device-action-dialog::backdrop {
+    background: rgba(9, 35, 29, .58);
+    backdrop-filter: blur(4px);
+}
+/* A link can open a usable dialog even without JavaScript. */
+.device-workspace .device-action-dialog[open]:not(:modal) {
+    box-shadow: 0 0 0 100vmax rgba(9, 35, 29, .58), 0 28px 90px rgba(9, 38, 30, .28);
+}
+.device-action-dialog-header {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 13px;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e4ede8;
+    background: linear-gradient(110deg, #f1faf6, #fff);
+}
+.device-action-dialog-header > div { min-width: 0; }
+.device-action-dialog-header .device-action-icon {
+    width: 42px;
+    height: 42px;
+    flex-basis: 42px;
+    border-radius: 12px;
+}
+.device-action-dialog-header .device-action-icon svg { width: 23px; height: 23px; }
+.device-action-dialog-header .eyebrow {
+    display: block;
+    margin-bottom: 3px;
+    color: #2b8270;
+    font-size: 9px;
+    letter-spacing: 1.3px;
+}
+.device-action-dialog-header h2 {
+    margin: 0;
+    color: #193e34;
+    font-size: 19px;
+    letter-spacing: -.45px;
+}
+.device-action-dialog-header p {
+    margin: 4px 0 0;
+    color: #6d857a;
+    font-size: 11px;
+    overflow-wrap: anywhere;
+}
+.device-action-dialog-header > form { margin-left: auto; }
+.device-action-close {
+    display: grid;
+    width: 36px;
+    height: 36px;
+    place-items: center;
+    padding: 0;
+    border: 1px solid #dbe8e1;
+    border-radius: 10px;
+    color: #4b7061;
+    background: #fff;
+    font-size: 23px;
+    line-height: 1;
+    cursor: pointer;
+}
+.device-action-close:hover { background: #eaf6f0; color: #184f40; }
+.device-action-close:focus-visible {
+    outline: 3px solid #26856e;
+    outline-offset: 2px;
+}
+.device-workspace .device-action-dialog > .device-assignment-body,
+.device-workspace .device-action-dialog > .device-edit-form,
+.device-workspace .device-action-dialog > form {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 18px 20px 20px;
+    border: 0;
+    border-radius: 0;
+    background: #fff;
+}
+.device-workspace .device-action-dialog .device-assignment-intro {
+    margin: 0 0 15px;
+    color: #587369;
+    font-size: 13px;
+}
+.device-workspace .device-action-dialog .device-assignment-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 10px;
+}
+.device-workspace .device-action-dialog .device-assignment-form select {
+    min-width: 0;
+    min-height: 44px;
+    margin: 0;
+    border-radius: 10px;
+    font-size: 13px;
+}
+.device-workspace .device-action-dialog .device-assignment-form .button {
+    min-height: 44px;
+}
+.device-workspace .device-action-dialog .field-hint {
+    margin-top: 13px;
+    color: #698177;
+    font-size: 11px;
+}
+.device-workspace .device-action-dialog .device-edit-form .form-grid {
+    gap: 0 18px;
+}
+.device-workspace .device-action-dialog label {
+    color: #3a5d4e;
+    font-size: 12px;
+    font-weight: 650;
+}
+.device-workspace .device-action-dialog input,
+.device-workspace .device-action-dialog select {
+    border-color: #d8e5de;
+    border-radius: 9px;
+    background: #fff;
+    color: #173a32;
+    font-size: 13px;
+}
+.device-workspace .device-action-dialog .action-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 14px;
+}
+.device-workspace .device-action-dialog .action-row .button { min-height: 43px; }
+.device-workspace .device-security-dialog > form > p {
+    margin: 0 0 20px;
+    padding: 13px 15px;
+    border-left: 3px solid #c47b4a;
+    border-radius: 8px;
+    color: #80593f;
+    background: #fff7f0;
+    line-height: 1.55;
+}
+.device-workspace .device-security-dialog .check {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.5;
+}
+.device-workspace .device-security-dialog .check input {
+    width: 17px;
+    height: 17px;
+    flex: none;
+    margin: 1px 0 0;
+}
+.device-action-errors {
+    margin: 0 0 17px;
+    padding: 13px 15px;
+    border: 1px solid #efccc4;
+    border-radius: 10px;
+    color: #9b3e34;
+    background: #fff3f0;
+    font-size: 12px;
+}
+.device-action-errors ul { margin: 6px 0 0; padding-left: 18px; }
+@media (max-width: 600px) {
+    .device-workspace .device-action-dialog {
+        width: calc(100vw - 16px);
+        max-height: calc(100dvh - 16px);
+        border-radius: 14px;
+    }
+    .device-action-dialog-header { gap: 10px; padding: 15px 16px; }
+    .device-action-dialog-header h2 { font-size: 17px; }
+    .device-action-dialog-header .device-action-icon {
+        width: 36px;
+        height: 36px;
+        flex-basis: 36px;
+    }
+    .device-workspace .device-action-dialog > .device-assignment-body,
+    .device-workspace .device-action-dialog > .device-edit-form,
+    .device-workspace .device-action-dialog > form {
+        padding: 18px 16px 22px;
+    }
+    .device-workspace .device-action-dialog .device-assignment-form,
+    .device-workspace .device-action-dialog .device-edit-form .form-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .device-workspace .device-action-dialog .device-assignment-form .button { width: 100%; }
+    .device-workspace .device-action-dialog input,
+    .device-workspace .device-action-dialog select { font-size: 16px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+    .device-workspace .device-action-dialog:modal {
+        animation: device-modal-in .23s cubic-bezier(.2,.7,.2,1) both;
+    }
+    .device-action-dialog::backdrop { animation: device-backdrop-in .23s ease-out both; }
+}
+@keyframes device-modal-in {
+    from { opacity: 0; transform: translate(-50%, calc(-50% + 12px)) scale(.985); }
+    to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+@keyframes device-backdrop-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}

@@ -1,0 +1,574 @@
+/* Final responsive layer, loaded after page-specific styles. */
+.sidebar .sidebar-bottom {
+    margin: auto 10px 0;
+    padding: 16px 0 0;
+    border-top: 1px solid rgba(220, 249, 238, .28);
+}
+
+.sidebar-logout {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 46px;
+    padding: 10px 14px;
+    border: 1px solid rgba(220, 249, 238, .24);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, .09);
+    color: #f4fffb;
+    font: inherit;
+    font-weight: 650;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color .2s ease, border-color .2s ease;
+}
+
+.sidebar-logout:hover {
+    background: rgba(255, 255, 255, .17);
+    border-color: rgba(220, 249, 238, .45);
+}
+
+.sidebar-logout:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 3px;
+}
+
+.sidebar-logout svg {
+    width: 20px;
+    height: 20px;
+    flex: none;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+@media (max-width: 900px) {
+    .sidebar {
+        position: relative;
+        inset: auto;
+        width: 100%;
+        height: auto;
+        padding: 8px 16px;
+        overflow: visible;
+        border-radius: 0 0 14px 14px;
+    }
+
+    .sidebar-header {
+        align-items: center;
+        gap: 10px;
+    }
+
+    .sidebar .brand {
+        min-height: 44px;
+        gap: 8px;
+        padding: 0;
+    }
+
+    .sidebar .brand-icon {
+        flex: 0 0 36px;
+        width: 36px;
+        height: 36px;
+        border-radius: 11px;
+    }
+
+    /* Keep the wordmark on one line instead of stacking patient / watch. */
+    .sidebar .brand-wordmark {
+        display: block;
+        line-height: 1;
+    }
+
+    .sidebar .brand-name,
+    .sidebar .brand-light {
+        font-size: 20px;
+        letter-spacing: -.7px;
+    }
+
+    .sidebar .brand small {
+        margin-top: 5px;
+        font-size: 6px;
+        letter-spacing: 1px;
+    }
+
+    .topbar {
+        height: auto;
+        min-height: 56px;
+        padding: 6px 16px;
+    }
+
+    .topbar-actions {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .topbar-actions #sound-toggle {
+        min-width: 0;
+        min-height: 44px;
+        padding: 8px 14px;
+        font-size: 12px;
+        line-height: 1.3;
+        white-space: normal;
+        text-align: center;
+    }
+
+    .topbar-actions .account-link {
+        justify-content: center;
+        flex: 0 0 44px;
+        width: 44px;
+        height: 44px;
+    }
+
+    .topbar-actions .account-link > span:last-child {
+        display: none;
+    }
+
+    .menu-toggle:focus-visible,
+    .topbar-actions .account-link:focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: 3px;
+    }
+
+    .shell {
+        min-width: 0;
+        margin-left: 0;
+    }
+
+    .shell main,
+    .panel,
+    .page-heading,
+    .dashboard-charts,
+    .chart-card {
+        min-width: 0;
+    }
+
+    .dashboard-charts {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .sidebar nav {
+        flex-direction: column;
+        overflow-x: visible;
+    }
+
+    body.navigation-ready.nav-expanded .sidebar nav,
+    body:not(.navigation-ready) .sidebar nav {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: stretch;
+        align-content: start;
+        gap: 6px;
+        margin-top: 8px;
+        max-height: min(65dvh, 460px);
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 8px 0 2px;
+        scrollbar-width: thin;
+    }
+
+    .sidebar nav .workspace-label {
+        display: block;
+        grid-column: 1 / -1;
+        margin: 13px 10px 4px;
+    }
+
+    .sidebar .sidebar-bottom {
+        display: none;
+        margin: 10px 0 0;
+        padding: 12px 0 2px;
+    }
+
+    body.navigation-ready.nav-expanded .sidebar .sidebar-bottom,
+    body:not(.navigation-ready) .sidebar .sidebar-bottom {
+        display: block;
+    }
+
+    .menu-toggle {
+        min-width: 74px;
+        min-height: 44px;
+        padding: 8px 10px;
+    }
+
+    .sidebar .nav-link {
+        display: grid;
+        grid-template-columns: 24px minmax(0, 1fr) auto;
+        width: 100%;
+        min-width: 0;
+        min-height: 44px;
+        margin: 0;
+        padding: 10px 12px;
+        white-space: normal;
+    }
+
+    /* monitor.css hides every direct span at this breakpoint; restore only
+       the icon and label, keeping the decorative index hidden. */
+    .sidebar .nav-link > .nav-icon {
+        display: inline-flex;
+    }
+
+    .sidebar .nav-link > .nav-copy {
+        display: block;
+        color: #f4fffb;
+    }
+
+    .sidebar .nav-link > .nav-index {
+        display: none;
+    }
+
+    .sidebar .nav-copy {
+        overflow: visible;
+        text-overflow: clip;
+        white-space: normal;
+        line-height: 1.3;
+    }
+
+    .sidebar .nav-link b {
+        flex-shrink: 0;
+    }
+
+    .page-heading,
+    .panel-heading,
+    .section-heading {
+        flex-wrap: wrap;
+    }
+
+    .page-heading > div,
+    .panel-heading > div,
+    .section-heading > div {
+        min-width: 0;
+    }
+
+    .page-heading h1,
+    .panel-heading h2,
+    .section-heading h2 {
+        overflow-wrap: anywhere;
+    }
+
+    .page-actions,
+    .record-heading-actions,
+    .form-actions {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 760px) {
+    .form-grid,
+    .filter-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .form-grid > *,
+    .filter-grid > *,
+    .span-2,
+    .filter-grid .form-actions {
+        grid-column: 1 / -1;
+        min-width: 0;
+    }
+
+    .table-wrap.mobile-records {
+        overflow: hidden;
+    }
+
+    .mobile-records table,
+    .mobile-records tbody {
+        display: block;
+        width: 100%;
+    }
+
+    .mobile-records thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+    }
+
+    .mobile-records tbody tr {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px 18px;
+        padding: 18px;
+        border-top: 1px solid var(--line);
+    }
+
+    .mobile-records tbody tr:first-child {
+        border-top: 0;
+    }
+
+    .mobile-records td {
+        display: block;
+        min-width: 0;
+        padding: 0;
+        border: 0;
+        overflow-wrap: anywhere;
+        white-space: normal;
+        font-size: 12px;
+    }
+
+    .mobile-records td::before {
+        display: block;
+        margin-bottom: 3px;
+        color: #789187;
+        content: attr(data-label);
+        font-size: 9px;
+        font-weight: 750;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+    }
+
+    .mobile-records td:first-child,
+    .mobile-records td[data-label="Action"],
+    .mobile-records td[colspan] {
+        grid-column: 1 / -1;
+    }
+
+    .mobile-records td[colspan]::before {
+        content: none;
+    }
+
+    .mobile-records td.time {
+        font-size: 12px;
+        white-space: normal;
+    }
+
+    .mobile-records td .table-action {
+        justify-content: flex-start;
+    }
+
+    .mobile-records td[data-label="Action"] .text-link {
+        display: inline-flex;
+        align-items: center;
+        min-height: 42px;
+        padding: 9px 13px;
+        border: 1px solid #d8e8e1;
+        border-radius: 9px;
+        background: #f7fbf9;
+    }
+
+    .mobile-records td.empty {
+        padding: 12px 0;
+    }
+
+    .pagination,
+    .account-pagination {
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .pagination > div,
+    .account-pagination > div {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 16px;
+    }
+
+    .emergency-alert-dialog {
+        display: flex;
+        flex-direction: column;
+        max-height: calc(100dvh - 20px);
+        overflow: hidden;
+    }
+
+    .emergency-alert-header,
+    .emergency-alert-actions {
+        flex: 0 0 auto;
+    }
+
+    .emergency-alert-body {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+}
+
+@media (max-width: 600px) {
+    body.navigation-ready.nav-expanded .sidebar nav,
+    body:not(.navigation-ready) .sidebar nav {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .shell main {
+        padding: 20px 16px 32px;
+    }
+
+    .connection-strip {
+        display: grid;
+        grid-template-columns: 6px minmax(0, 1fr);
+        align-items: center;
+        gap: 3px 8px;
+        padding: 8px 16px 0;
+        font-size: 10px;
+    }
+
+    .connection-strip #connection-status {
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .connection-strip .timezone {
+        display: block;
+        grid-column: 2;
+        margin-left: 0;
+    }
+
+    .page-heading,
+    .section-heading {
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .page-heading .page-actions,
+    .page-heading .record-heading-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .page-actions .button,
+    .record-heading-actions .button {
+        flex: 1 1 140px;
+        min-width: 0;
+    }
+
+    .button {
+        min-height: 42px;
+        white-space: normal;
+        text-align: center;
+    }
+
+    input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+    select,
+    textarea,
+    .account-modal .account-form-grid input,
+    .account-modal .account-form-grid select,
+    .event-search-field input {
+        min-height: 44px;
+        font-size: 16px;
+    }
+
+    .form-grid label,
+    .filter-grid label,
+    .account-form label,
+    .room-details-form label,
+    .device-workspace label {
+        font-size: 13px;
+    }
+
+    .inline {
+        flex-wrap: wrap;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .stat-card {
+        min-width: 0;
+        border-bottom: 1px solid #e8f0ec;
+    }
+
+    .chart-card {
+        min-width: 0;
+    }
+
+    .activity-bars {
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        min-width: 0;
+    }
+
+    .activity-day-label {
+        gap: 2px;
+    }
+
+    .status-chart {
+        grid-template-columns: minmax(0, 116px) minmax(0, 1fr);
+    }
+
+    .event-search-field {
+        min-width: 0;
+    }
+
+    .event-search-field input {
+        min-width: 0;
+    }
+
+    .patient-detail {
+        flex-wrap: wrap;
+    }
+
+    .patient-detail strong {
+        overflow-wrap: anywhere;
+    }
+
+    .room-card-header,
+    .device-workspace .device-card-header {
+        flex-wrap: wrap;
+    }
+
+    .room-card-header > .badge,
+    .device-workspace .device-status-stack {
+        margin-left: auto;
+    }
+
+    .login-page {
+        min-width: 0;
+    }
+
+    .login-form {
+        min-width: 0;
+    }
+}
+
+@media (max-width: 420px) {
+    .status-chart {
+        grid-template-columns: minmax(0, 1fr);
+        justify-items: center;
+    }
+
+    .status-legend {
+        width: 100%;
+    }
+
+    .event-search-field {
+        flex-wrap: wrap;
+    }
+
+    .event-search-field .event-search-submit {
+        flex-basis: 100%;
+    }
+
+    .mobile-records tbody tr {
+        gap: 11px;
+        padding: 16px;
+    }
+
+    .emergency-alert-actions {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 360px) {
+    .stats-grid,
+    .mobile-records tbody tr,
+    .room-summary,
+    .device-workspace .device-overview {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .room-summary > div,
+    .device-workspace .device-overview-item {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .mobile-records td {
+        grid-column: 1 / -1;
+    }
+}

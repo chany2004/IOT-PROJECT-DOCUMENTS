@@ -1,0 +1,5 @@
+{
+  "name": "LiPo charger + 5V boost",
+  "author": "Patient Fall Detection Project",
+  "pins": ["B+", "B-", "CHARGE_5V", "CHARGE_GND", "USB_GND", "USB_5V"]
+}

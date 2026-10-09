@@ -1,0 +1,3 @@
+name = Fall Detection ESP32-CAM
+board = esp32-cam
+notes = Velxio/Wokwi-compatible source bundle. Open diagram.json at the archive root.

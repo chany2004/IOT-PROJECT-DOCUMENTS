@@ -1,0 +1,9 @@
+{
+  "name": "Protected LiPo 3.7V 2000mAh",
+  "author": "Patient Fall Detection Project",
+  "pins": ["P+", "P-"],
+  "controls": [
+    {"id":"voltage","label":"Cell voltage (V)","type":"range","min":3,"max":4.2,"step":0.1}
+  ],
+  "display": {"width":120,"height":60}
+}

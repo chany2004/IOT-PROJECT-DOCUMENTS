@@ -1,0 +1,181 @@
+/* Register hardware in a focused dialog; keep the device registry uncluttered. */
+.device-workspace .device-registration-dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    z-index: 60;
+    width: min(660px, calc(100vw - 32px));
+    height: auto;
+    max-width: none;
+    max-height: calc(100dvh - 32px);
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid #d4e2d9;
+    border-radius: 18px;
+    color: #183c31;
+    background: #fff;
+    box-shadow: 0 28px 90px rgba(7, 31, 24, .3);
+    transform: translate(-50%, -50%);
+}
+.device-workspace .device-registration-dialog[open] { display: flex; flex-direction: column; }
+.device-registration-dialog::backdrop { background: rgba(9, 32, 27, .6); backdrop-filter: blur(4px); }
+.device-registration-header {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 14px;
+    padding: 17px 22px;
+    border-bottom: 1px solid #e3ebe5;
+}
+.device-registration-header > div { min-width: 0; }
+.device-registration-header .eyebrow { display: block; margin-bottom: 3px; font-size: 9px; }
+.device-registration-header h2 { font-size: 18px; letter-spacing: -.03em; }
+.device-registration-header p { margin: 3px 0 0; color: #6d8275; font-size: 11px; }
+.device-registration-header .device-create-icon {
+    flex: 0 0 42px;
+    width: 42px;
+    height: 42px;
+    border-radius: 11px;
+}
+.device-registration-close-form { margin-left: auto; }
+.device-registration-close {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 1px solid #dbe6de;
+    border-radius: 9px;
+    color: #557164;
+    background: #fff;
+    font-size: 24px;
+    line-height: 1;
+}
+.device-registration-close:hover { color: #173b30; background: #f2f8f4; }
+.device-workspace .device-registration-form {
+    display: flex;
+    flex: 0 1 auto;
+    flex-direction: column;
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    background: #fff;
+}
+.device-registration-body {
+    flex: 0 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 20px 22px 8px;
+}
+.device-registration-body .form-grid { gap: 0 20px; }
+.device-registration-body label { color: #3d5a4c; font-size: 12px; font-weight: 650; }
+.device-registration-body input,
+.device-registration-body select {
+    min-height: 45px;
+    border-color: #d6e2d9;
+    border-radius: 9px;
+    background: #fff;
+    color: #1b3a30;
+    font-size: 13px;
+}
+.device-registration-body .device-nested-settings { margin-top: 3px; margin-bottom: 0; }
+.device-registration-errors {
+    margin-bottom: 20px;
+    padding: 13px 16px;
+    border: 1px solid #efd4ce;
+    border-radius: 9px;
+    color: #9b453c;
+    background: #fff3f0;
+    font-size: 11px;
+}
+.device-registration-errors ul { margin: 6px 0 0; padding-left: 18px; }
+.device-workspace .device-registration-dialog .device-form-footer {
+    flex: 0 0 auto;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 0;
+    padding: 13px 22px;
+    background: #f9fcfa;
+}
+.device-registration-dialog .device-form-footer p {
+    color: #6e8377;
+    font-size: 11px;
+    line-height: 1.5;
+}
+.device-registration-actions { display: flex; gap: 9px; margin-left: auto; }
+.device-registration-actions .button {
+    min-height: 42px;
+    padding: 10px 17px;
+    border-radius: 9px;
+    box-shadow: none;
+    font-size: 12px;
+}
+.device-registration-close:focus-visible,
+.device-registration-actions .button:focus-visible { outline: 3px solid #7bc4a7; outline-offset: 2px; }
+
+.device-registration-loading {
+    position: absolute;
+    z-index: 3;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 16px;
+    background: rgba(249, 252, 250, .86);
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+}
+.device-registration-loading[hidden] { display: none; }
+.device-registration-loading-content {
+    width: min(100%, 300px);
+    padding: 19px 21px 21px;
+    border: 1px solid #e1eae4;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 16px 40px rgba(19, 62, 51, .13);
+    text-align: center;
+    animation: device-registration-loading-in .28s ease-out both;
+}
+.device-registration-ecg { display: block; width: min(100%, 240px); height: auto; margin: 0 auto; overflow: visible; }
+.device-registration-ecg path { stroke-width: 24; }
+.device-registration-ecg-base { stroke: #f0c8d4; }
+.device-registration-ecg-trace {
+    stroke: #e5a1b7;
+    stroke-dasharray: 14 100;
+    stroke-dashoffset: 114;
+    filter: drop-shadow(0 0 8px rgba(229, 161, 183, .55));
+    animation: device-registration-ecg-sweep .82s linear infinite;
+}
+.device-registration-loading-content strong { display: block; margin-top: 3px; color: #234a40; font-size: 15px; }
+.device-registration-loading-content p { margin: 5px 0 0; color: #70867a; font-size: 11px; line-height: 1.5; }
+@keyframes device-registration-loading-in { from { opacity: 0; transform: translateY(8px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes device-registration-ecg-sweep { from { stroke-dashoffset: 114; } to { stroke-dashoffset: 0; } }
+
+@media (max-width: 700px) {
+    .device-workspace .device-registration-dialog {
+        width: calc(100vw - 16px);
+        max-height: calc(100dvh - 16px);
+        border-radius: 12px;
+    }
+    .device-registration-header { gap: 10px; padding: 14px 16px; }
+    .device-registration-header h2 { font-size: 16px; }
+    .device-registration-header p { font-size: 10px; }
+    .device-registration-header .device-create-icon { flex-basis: 36px; width: 36px; height: 36px; }
+    .device-registration-body { padding: 18px 17px 10px; }
+    .device-registration-body .form-grid { grid-template-columns: minmax(0, 1fr); }
+    .device-workspace .device-registration-dialog .device-form-footer { align-items: stretch; padding: 13px 16px; }
+    .device-registration-dialog .device-form-footer p { width: 100%; }
+    .device-registration-actions { width: 100%; margin-left: 0; }
+    .device-registration-actions .button { flex: 1 1 0; min-width: 0; }
+}
+@media (max-width: 600px) {
+    .device-registration-body input,
+    .device-registration-body select { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .device-registration-loading-content, .device-registration-ecg-trace { animation: none; }
+    .device-registration-ecg-trace { display: none; }
+}

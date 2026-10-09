@@ -1,0 +1,129 @@
+/* Patient overview: scoped styles for the dashboard care workspace. */
+.care-overview {
+    margin-bottom: 26px;
+    padding: 22px;
+    border: 1px solid #dfe8e4;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #fbfdfc, #f2f8f4);
+    box-shadow: 0 12px 32px rgba(20, 83, 66, .04);
+}
+.care-overview-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+.care-overview-heading .eyebrow { margin-bottom: 5px; font-size: 9px; letter-spacing: 1.5px; }
+.care-overview-heading h2 { margin: 0; font-size: 21px; letter-spacing: -.4px; }
+.care-overview-heading p { margin: 5px 0 0; color: #6e827b; font-size: 12px; }
+.care-overview-result {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 1px;
+    color: #6b8178;
+    font-size: 11px;
+}
+.care-live-note { margin-left: auto; color: #6b8178; }
+.care-patient-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.care-patient-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 18px;
+    border: 1px solid #dfe8e3;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 5px 18px rgba(29, 66, 53, .035);
+    transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+.care-patient-card:hover {
+    border-color: #b8daca;
+    box-shadow: 0 12px 28px rgba(29, 91, 68, .1);
+    transform: translateY(-2px);
+}
+.care-patient-card[data-status="urgent"] { border-color: #e8bcb5; }
+.care-card-heading { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.care-patient-identity { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1 1 150px; }
+.care-patient-avatar {
+    display: grid;
+    place-items: center;
+    flex: 0 0 39px;
+    height: 39px;
+    border: 1px solid #dcebe3;
+    border-radius: 11px;
+    color: #36715a;
+    background: #eff7f2;
+    font-size: 17px;
+    font-weight: 650;
+}
+.care-patient-identity > div { min-width: 0; }
+.care-patient-identity h3 { margin: 0; font-size: 15px; line-height: 1.35; overflow-wrap: anywhere; }
+.care-patient-identity h3 a:hover { color: #2c836a; text-decoration: underline; }
+.care-patient-identity > div > span { display: block; margin-top: 3px; color: #80918a; font-size: 10px; overflow-wrap: anywhere; }
+.care-status { padding: 5px 9px; border: 1px solid #e1e8e4; border-radius: 999px; color: #60786c; background: #f6f9f7; font-size: 10px; font-weight: 700; }
+.care-status-urgent { border-color: #f0d0c9; color: #a9463b; background: #fff4f1; }
+.care-status-review { border-color: #e5d9f1; color: #72528b; background: #f8f4fc; }
+.care-status-verifying { border-color: #d4e3ee; color: #407494; background: #f0f7fc; }
+.care-patient-info { display: grid; grid-template-columns: minmax(0, .65fr) minmax(0, 1fr); gap: 12px; margin: 18px 0 14px; }
+.care-patient-info dt { margin-bottom: 4px; color: #81938a; font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: .65px; }
+.care-patient-info dd { margin: 0; color: #36594a; font-size: 12px; font-weight: 600; overflow-wrap: anywhere; }
+.care-device-list { padding: 0 12px; border: 1px solid #e9eeeb; border-radius: 9px; background: #fafcfb; }
+.care-device-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; padding: 10px 0; }
+.care-device-row + .care-device-row { border-top: 1px solid #e9efeb; }
+.care-device-row > div { min-width: 0; }
+.care-device-row strong { display: block; color: #49695a; font-size: 11px; font-weight: 600; }
+.care-device-row > div > span { display: block; margin-top: 2px; color: #8a9b91; font-size: 10px; overflow-wrap: anywhere; }
+.care-device-state { display: inline-flex; align-items: center; gap: 6px; padding: 4px 7px; border: 1px solid #e2ebe5; border-radius: 999px; background: #fff; font-size: 10px; color: #7b8d82; }
+.care-device-state i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.care-device-state.is-online { color: #368369; }
+.care-device-state.needs-attention { color: #a1743e; }
+.care-card-summary { flex: 1; padding: 12px 0; color: #7a8e82; font-size: 11px; }
+.care-urgent-count { color: #a9463b; font-weight: 600; }
+.care-card-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding-top: 12px; border-top: 1px solid #ecf0ed; }
+.care-card-actions .button { min-height: 34px; padding: 7px 11px; border-radius: 7px; box-shadow: none; font-size: 11px; }
+.care-edit-link { margin-left: auto; color: #70897b; font-size: 11px; }
+.care-edit-link:hover { color: #267258; text-decoration: underline; }
+.care-overview-empty { grid-column: 1 / -1; padding: 30px 18px; border: 1px dashed #d7e3dc; border-radius: 11px; background: #fff; text-align: center; }
+.care-overview-empty strong { color: #4b6a58; font-size: 14px; }
+.care-overview-empty p { margin: 7px 0 14px; color: #7c8f82; font-size: 12px; }
+.care-overview [hidden] { display: none !important; }
+.caregiver-banner {
+    position: relative;
+    overflow: hidden;
+    border-color: #cfe5d8;
+    background: linear-gradient(115deg, #edf8f1, #f8fcf9 74%);
+    box-shadow: 0 10px 26px rgba(20, 83, 66, .04);
+}
+.caregiver-banner::after {
+    position: absolute;
+    right: -35px;
+    bottom: -65px;
+    width: 180px;
+    height: 180px;
+    border: 1px solid rgba(85, 167, 129, .16);
+    border-radius: 50%;
+    content: '';
+    pointer-events: none;
+}
+.caregiver-banner > div,
+.caregiver-banner > a { position: relative; z-index: 1; }
+.caregiver-banner .button { border-radius: 999px; }
+.care-overview a:focus-visible,
+.care-overview button:focus-visible { outline: 2px solid #67a48a; outline-offset: 3px; }
+@media (min-width: 1600px) { .care-patient-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 1100px) {
+    .care-patient-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+    .care-overview { padding: 15px; border-radius: 12px; }
+    .care-overview-heading { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .care-overview-heading h2 { font-size: 19px; }
+    .care-patient-card { padding: 15px; }
+    .care-live-note { margin-left: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .care-patient-card { transition: none; }
+}

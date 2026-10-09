@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "author": "Fall Detection Project",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "board-velxio-esp32-cam", "id": "esp32", "top": -10, "left": -40, "attrs": {} },
+    { "type": "wokwi-mpu6050", "id": "mpu", "top": -20, "left": 220, "attrs": { "address": "0x68" } },
+    { "type": "wokwi-pushbutton", "id": "button", "top": 160, "left": 210, "attrs": { "color": "red", "xray": "1" } },
+    { "type": "wokwi-led", "id": "greenLed", "top": 165, "left": -15, "attrs": { "color": "green" } },
+    { "type": "wokwi-resistor", "id": "greenRes", "top": 165, "left": 55, "attrs": { "value": "220" } },
+    { "type": "wokwi-buzzer", "id": "buzzer", "top": 270, "left": 185, "attrs": { "volume": "0.15" } }
+  ],
+  "connections": [
+    [ "esp32:13", "mpu:SDA", "blue", [ "h20" ] ],
+    [ "esp32:14", "mpu:SCL", "green", [ "h40" ] ],
+    [ "esp32:3V3", "mpu:VCC", "orange", [ "h60" ] ],
+    [ "esp32:GND.1", "mpu:GND", "black", [ "h80" ] ],
+    [ "esp32:12", "button:1.l", "purple", [ "h100" ] ],
+    [ "button:2.l", "esp32:GND.2", "black", [ "h120" ] ],
+    [ "esp32:2", "greenRes:1", "green", [ "h140" ] ],
+    [ "greenRes:2", "greenLed:A", "green", [ "h160" ] ],
+    [ "greenLed:C", "esp32:GND.3", "black", [ "h180" ] ],
+    [ "esp32:15", "buzzer:1", "yellow", [ "h200" ] ],
+    [ "buzzer:2", "esp32:GND.1", "black", [ "h220" ] ]
+  ],
+  "dependencies": {}
+}
